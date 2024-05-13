@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+const { PrismaClient } = require("@prisma/client");
 var db = new PrismaClient();
 const bcrypt = require("bcrypt");
 const saltRounds = 12;

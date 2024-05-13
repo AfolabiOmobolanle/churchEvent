@@ -1,4 +1,6 @@
 const {PrismaClient} = require('@prisma/client');
+const { sendMail } = require('../utils/mailHandler');
+
 var db = new PrismaClient();
 
 const createUser = async (req,res) =>{
@@ -23,7 +25,8 @@ const newUser = await db.user.create({
     RCCG:RCCG
     
 })
-
+//send mail 
+sendMail("event title", newUser.fullname)
 const response = {
     data:newUser,
     message:"user registered successfully"
@@ -36,8 +39,22 @@ res.status(200).json(response)
 }
 }
 
+const getUserByPhoneNumber = async (req,res) =>{
+const user = await db.user.findUnique({
+    where:{
+        phoneNumber: req.params.phoneNumber
+    }
+});
+res.status(200).json(user)
+}
 
+const getAllUser = async (req,res) =>{
+    const user = await db.user.findMany({});
+    res.status(200).json(user)
+}
 
 module.exports ={
-    createUser
+    createUser,
+    getUserByPhoneNumber,
+    getAllUser
 }
