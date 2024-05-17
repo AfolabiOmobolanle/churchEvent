@@ -1,23 +1,28 @@
-
-const userRoute = require("./routes/UserRoute")
-const adminRoute = require("./routes/AdminRoute")
-
-const dotenv = require("dotenv").config({path:".env"});
 const express = require("express");
+const dotenv = require("dotenv");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
+const userRoute = require("./routes/UserRoute");
+const adminRoute = require("./routes/AdminRoute");
 
+dotenv.config({ path: ".env" });
 
 const app = express();
+
+// Middleware setup
+app.use(cors());
+app.use(bodyParser.json());
 app.use(express.json());
 
-app.use('/user',userRoute);
-app.use('/admin',adminRoute);
+// Route setup
+app.use('/api/v1/user', userRoute);
+app.use('/api/v1/admin', adminRoute);
 
- let PORT = process.env.PORT || 2000;
+// Port setup
+const PORT = process.env.PORT || 2000;
 
-
-app.listen(PORT,()=>{
-    console.log(`Server is up amd running on port ${PORT}`)
-})
+// Start server
+app.listen(PORT, () => {
+    console.log(`Server is up and running on port ${PORT}`);
+});

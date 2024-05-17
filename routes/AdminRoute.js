@@ -1,14 +1,11 @@
 const express = require("express");
 const router = express.Router();
 
-const {createAdmin,loginAdmin,getAdmin} = require("../controllers/AdminController");
+const { createAdmin, loginAdmin, getAdmin } = require("../controllers/AdminController");
 
-router.post('/api/v1/admin',createAdmin);
-router.get('/api/v1/admin',getAdmin);
-router.post('/api/v1/login',loginAdmin);
+// Define routes
+router.post('/create', createAdmin);
+router.get('/', getAdmin);
+router.post('/login', loginAdmin);
 
-
-
-
-
-module.exports = router
+module.exports = router;

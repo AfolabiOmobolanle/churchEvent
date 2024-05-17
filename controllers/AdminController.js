@@ -4,70 +4,97 @@ const bcrypt = require("bcrypt");
 const saltRounds = 12;
 
 const createAdmin = async (req,res)=>{
-try { 
+    console.log("This is working")
     const { username, email, password } = req.body;
-
-    const existingAdmin = await db.admin.findUnique({
-        where:{
-            username:username,
-            email:email
-        }
-    });
-    if (existingAdmin) {
-        return res.status(400).json("User already exist! Please use another email and username")
+    //validate data
+    if (!username || !email || !password) {
+        return res.status(400).json("Please enter username, password and email")
     }
-
-    const hashedPassword  = await bcrypt.hashSync(password,saltRounds);
-
-    console.log(hashedPassword);
-
-    const newAdmin = await db.admin.create({
-        data:{
-            username:username,
-            email:email,
-            password:password
-        }
-    })
-    const resp= {
-        data:newAdmin,
-        message:"admin created"
-        
-    }
-    res.status(200).json(resp)
-} catch (error) {
-    res.status(500).json({
-        error:error.message
-    })
-}
-}
-
-
-const loginAdmin = async (req,res) =>{
     try {
-        const {email,password} = req.body;
-        const admin = await db.admin.findFirst({
-            where:{
-                email:email
+        // Check if admin already exists with the provided username or email
+        const existingAdmin = await db.admin.findFirst({
+            where: {
+                OR: [
+                    { username: username },
+                    { email: email }
+                ]
             }
         });
-        if (!admin) {
-            res.status(200).json({message:"Wrong password or username"})
+    
+        // If admin already exists, return an error response
+        if (existingAdmin) {
+            return res.status(400).json({ error: "User already exists! Please use another email and username" });
         }
-
-        const passwordMatched = await db.admin.findFirst
-    (
-        password,admin.password
-
-    )
-    if (!passwordMatched) {
-        return res.status(200).json({message:"Wrong password or username"})
-    }
-    res.status(200).json({data:{adminId:admin.id, email:admin.email}})
+    
+        // Hash the password using bcrypt
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+    
+        // Create the new admin with the hashed password
+        const newAdmin = await db.admin.create({
+            data: {
+                username: username,
+                email: email,
+                password: hashedPassword // Use the hashed password instead of plain text
+            }
+        });
+    
+        // Prepare the response object
+        const resp = {
+            data: newAdmin,
+            message: "Admin created successfully"
+        };
+    
+        // Send a success response with the new admin data
+        res.status(200).json(resp);
     } catch (error) {
-        res.status(500).json({
-            error:error.message
-        })
+        // If an error occurs during the process, return a generic error response
+        res.status(500).json({ error: "Internal server error" + error});
     }
+}
+
+const loginAdmin = async (req,res) =>{
+    const {email,password} = req.body;
+    try {
+        // Check if admin already exists with the provided username or email
+        const existingAdmin = await db.admin.findFirst({
+            where: {
+                OR: [
+                    { email: email },
+                    { password: password }
+                ]
+            }
+        });
+    
+        // If admin already exists, return an error response
+        if (existingAdmin) {
+            return res.status(400).json({ error: "User already exists! Please use another email and username" });
+        }
+    
+        // Hash the password using bcrypt
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+    
+        // Create the new admin with the hashed password
+        const newAdmin = await db.admin.create({
+            data: {
+                username: username,
+                email: email,
+                password: hashedPassword // Use the hashed password instead of plain text
+            }
+        });
+    
+        // Prepare the response object
+        const resp = {
+            data: newAdmin,
+            message: "Admin created successfully"
+        };
+    
+        // Send a success response with the new admin data
+        res.status(200).json(resp);
+    } catch (error) {
+        // If an error occurs during the process, return a generic error response
+        res.status(500).json({ error: "Internal server error" + error });
+    }
+    
 
 }
 
