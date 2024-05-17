@@ -6,8 +6,8 @@ const transporter = nodemailer.createTransport({
   secure: false, // Use `true` for port 465, `false` for all other ports
   auth: {
     user: "maddison53@ethereal.email",
-    pass: "jn7jnAPss4f63QBp6D"
-  }
+    pass: "jn7jnAPss4f63QBp6D",
+  },
 });
 
 const sendMail = async (eventTitle, user) => {
@@ -17,7 +17,10 @@ const sendMail = async (eventTitle, user) => {
       from: '"Maddison Foo Koch 👻" <maddison53@ethereal.email>', // sender address
       to: "bar@example.com, baz@example.com", // list of receivers
       subject: `Thank You for registering for ${eventTitle}!!`,
-      text: `Dear ${user}, I hope this email finds you well. I want to take a moment to express our gratitude for registering for our upcoming church event. Your participation means a lot to us, and we are thrilled to have you join us. Once again, thank you for registering, and we look forward to seeing you soon!`,
+      text: `Dear ${user}, I hope this email finds you well. 
+      I want to take a moment to express our gratitude for registering for our upcoming church event. 
+      Your participation means a lot to us, and we are thrilled to have you join us.
+       Once again, thank you for registering, and we look forward to seeing you soon!`,
       // html: "<b>Hello world?</b>", // html body
     });
 
@@ -29,5 +32,5 @@ const sendMail = async (eventTitle, user) => {
 };
 
 module.exports = {
-  sendMail
+  sendMail,
 };
