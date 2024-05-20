@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
+
 const userRoute = require("./routes/UserRoute");
 const adminRoute = require("./routes/AdminRoute");
 
@@ -14,6 +15,7 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.json());
+
 
 // Route setup
 app.use('/api/v1/user', userRoute);
